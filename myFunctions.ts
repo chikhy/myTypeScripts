@@ -1,142 +1,46 @@
-// JScript source code
+/*	Set of JavaScript functions
+ *	20170331
+ *	Gus Posada
+ *	ServiceNOW oriented
+ */
 
-function FadeInPage(){
-	if(document.getElementById("body").filters("alpha").opacity < 100){
-		document.getElementById("body").filters("alpha").opacity += 5;
-		setTimeout("FadeInPage()",5);
-		}
-	else{
-		document.getElementById('body').style.visibility = "visible";
-		}
-	}
-
-function fnc_confirm(){
-	if(confirm('Confirma que desea eliminar el elemento?') == true)
-	{
+let askConfirmation: ()=> boolean = function (): boolean {
+	if (confirm('Do you confirm element deletion?') == true) {
 		return true;
-	}
-	else
-	{
-		return false
-	}
+	} else return false;
 }
 
-function fnc_ChangeCase(KeyPressEvent,UpperCase)
-{
-	if(UpperCase)
-	{
-		if((KeyPressEvent.keyCode > 96 && KeyPressEvent.keyCode < 123) || KeyPressEvent.keyCode == 241)
-			KeyPressEvent.keyCode = KeyPressEvent.keyCode - 32;
+// Checks date string format and date value
+let validateDate: (input : string)=> boolean = function(input: string) : boolean {
+	var returnval: boolean = false;
+	var validFormat: RegExp = RegExp(/((^\d{4}\/\d{1,2}\/\d{1,2})|)$/); // regular expression for date format
+	if (!validFormat.test(input)) alert('Invalid date format: yyyy\/mm\/dd.'); // check format
+	else { // check date
+		var yearField: number = parseInt(input.split("/")[0]); // get year
+		var monthField = parseInt(input.split("/")[1]); // get month
+		var dayField = parseInt(input.split("/")[2]); // get day
+		var dayobj: Date = new Date(yearField, monthField - 1, dayField) // create date object with obtained values
+		if ((dayobj.getMonth() + 1 != monthField) || (dayobj.getDate() != dayField) || (dayobj.getFullYear() != yearField)) alert('Invalid date format: yyy\/mm\/dd.');
+		else returnval = true;
 	}
-	else
-	{
-		if((KeyPressEvent.keyCode > 64 && KeyPressEvent.keyCode < 91) && KeyPressEvent.keyCode == 209)
-			KeyPressEvent.keyCode = KeyPressEvent.keyCode + 32;
-	}
-	KeyPressEvent.returnValue = true;
-}
-
-function fnc_IntegerKeyPress(KeyPressEvent)
-{
-	if(KeyPressEvent.keyCode < 48 || KeyPressEvent.keyCode > 57)
-		KeyPressEvent.returnValue = false;
-}
-
-function fnc_DatePress(KeyPressEvent)
-{
-	if(KeyPressEvent.keyCode < 47 || KeyPressEvent.keyCode > 57)
-		KeyPressEvent.returnValue = false;
-}
-
-function fnc_FloatKeyPress(KeyPressEvent){
-	if(KeyPressEvent.keyCode < 46 || KeyPressEvent.keyCode > 57 || KeyPressEvent.keyCode == 47) KeyPressEvent.returnValue = false;
-	}
-
-function fnc_Code(KeyPressEvent,UpperCase)
-{
-	if(UpperCase)
-	{
-		if((KeyPressEvent.keyCode > 96 && KeyPressEvent.keyCode < 123) || KeyPressEvent.keyCode == 241 || KeyPressEvent.keyCode == 32)
-			KeyPressEvent.keyCode = KeyPressEvent.keyCode - 32;
-	}
-	else
-	{
-		if((KeyPressEvent.keyCode > 64 && KeyPressEvent.keyCode < 91) && KeyPressEvent.keyCode == 209)
-			KeyPressEvent.keyCode = KeyPressEvent.keyCode + 32;
-	}
-	KeyPressEvent.returnValue = true;
-}
-
-function fnc_InchKeyPress(KeyPressEvent,field)
-{
-	if(KeyPressEvent.keyCode < 48 || KeyPressEvent.keyCode > 57)
-	{  
-		if (KeyPressEvent.keyCode == 32) 
-		{
-			if(field.value.indexOf(" ")==-1 && field.value.indexOf("/")==-1 && field.value.length>0)
-				KeyPressEvent.returnValue = true;
-			else
-				KeyPressEvent.returnValue = false;
-		}
-		else
-		{
-			if(KeyPressEvent.keyCode == 47 && field.value.indexOf("/")==-1 && field.value.length>0)
-				if(field.value.indexOf(" ")>0)
-					if(field.value.indexOf(" ")<field.value.length-1)
-						KeyPressEvent.returnValue = true;
-					else	
-						KeyPressEvent.returnValue = false;
-				else
-					KeyPressEvent.returnValue = true;
-			else
-				KeyPressEvent.returnValue = false;
-		}
-	}
-}
-
-function validateDate(dtControl) 
-{
-    var input = document.getElementById(dtControl)
-    var validformat=/((^\d{1,2}\/\d{1,2}\/\d{4})|)$/ //Basic check for format validity
-    var returnval=false
-    if (!validformat.test(input.value))
-		alert('Formato de fecha invalida: mm\/dd\/yyyy.');
-    else
-    { //Detailed check for valid date ranges
-		var monthfield=input.value.split("/")[0]
-		var dayfield=input.value.split("/")[1]
-		var yearfield=input.value.split("/")[2]
-	    var dayobj = new Date(yearfield, monthfield-1, dayfield)
-		if ((dayobj.getMonth()+1!=monthfield)||(dayobj.getDate()!=dayfield)||(dayobj.getFullYear()!=yearfield))
-			alert('Formato de fecha invalida: mm\/dd\/yyyy.');
-		else
-			returnval=true;
-    }
-    if (returnval==false) input.focus() //focus back on required field
-    return returnval
+	return returnval;
 }
 
 // Removes leading whitespaces
-// Suprime los espacios en blanco a la izquierda
-function LTrim(value)
-{
-    var re = /\s*((\S+\s*)*)/;
-    value = value.replace("'", "");
-    return value.replace(re, "$1");
+let LTrim: (input: string)=>string = function (input: string): string {
+	var re = /\s*((\S+\s*)*)/;
+	input = input.replace("'", "");
+	return input.replace(re, "$1");
 }
 
 // Removes ending whitespaces
-// Suprime los espacios en blanco a la derecha
-function RTrim(value)
-{
-    var re = /((\s*\S+)*)\s*/;
-    value = value.replace("'", "");
-    return value.replace(re, "$1");
+let RTrim: (input:string)=>string = function (input: string): string {
+	var re = /((\s*\S+)*)\s*/;
+	input = input.replace("'", "");
+	return input.replace(re, "$1");
 }
 
 // Removes leading and ending whitespaces
-// Suprime los espacios al comienzo y al final
-function Trim(value)
-{
-    return LTrim(RTrim(value));
+let Trim: (input: string)=> string = function (input: string): string {
+	return LTrim(RTrim(input));
 }
