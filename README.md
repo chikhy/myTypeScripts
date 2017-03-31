@@ -1,0 +1,2 @@
+# myTypeScripts
+TypeScript functions library
